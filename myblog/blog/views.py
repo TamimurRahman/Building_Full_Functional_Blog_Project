@@ -20,7 +20,7 @@ def post_list(request):
         posts = posts.filter(category__name = category_query) # post model er paricular category data ke filter korte partasi
     
     if tag_query:
-        posts = posts.filter(tag_name = tag_query)
+        posts = posts.filter(tag__name = tag_query)
     
     if search_query:
         posts = posts.filter(
@@ -43,7 +43,7 @@ def post_list(request):
         'tag_query':tag_query
 
     }
-    return render(request,'',context)
+    return render(request,'blog/post_list.html',context)
 
 
 def post_details(request,id):
@@ -77,7 +77,7 @@ def post_details(request,id):
     post.view_count +=1
     post.save()
 
-    return render(request,'',context)
+    return render(request,'blog/post_details.html',context)
 
 def liked_post(request,id):
     post = get_object_or_404(Post,id=id)
@@ -87,7 +87,7 @@ def liked_post(request,id):
     else:
         post.liked_users.add(request.user)
     
-    return redirect('',id=post.id)
+    return redirect('post_details',id=post.id)
 
 def post_create(request):
     if request.method == 'POST':
@@ -97,10 +97,11 @@ def post_create(request):
             post = form.save(commit = False)
             post.author = request.user
             post.save()
+            form.save_m2m()  # then save many-to-many tags jokhon forigen key use kora hoi tokhon autometic save hoiya jai but many to many er somoy alada vabe save kora lage
             return redirect('')
     else:
         form = PostForm()
-    return render(request,'',{'form':form})
+    return render(request,'blog/post_create.html',{'form':form})
 
 def post_update(request,id):
     post = get_object_or_404(Post,id=id)
@@ -108,17 +109,17 @@ def post_update(request,id):
         form = PostForm(request.POST,instance=post)
         if form.is_valid():
             form.save()
-            return redirect('',id=post.id)
+            return redirect('post_details',id=post.id)
     else:
         form = PostForm(instance=post)
     
-    return render(request,'',{'form':form})
+    return render(request,'blog/post_create.html',{'form':form})
     
 
 def post_delete(request,id):
     post = get_object_or_404(Post,id=id)
     post.delete()
-    return redirect('')
+    return redirect('post_list')
 
         
 

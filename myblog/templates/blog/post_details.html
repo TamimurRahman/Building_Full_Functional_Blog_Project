@@ -1,0 +1,44 @@
+{% extends "blog/base.html" %}
+{%load crispy_forms_tags %} 
+{% block title %}{{post.title}}{% endblock title %}
+
+{% block content %}
+
+<div class="container">
+    <div class="card" style="width: 18rem;">
+  <div class="card-body">
+    <h5 class="card-title">{{post.title}}</h5>
+    <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
+    <p class="card-text">By <strong>{{post.author}}</strong> {{post.created_at | date:'F d, y'}}</p>
+    
+    <div>
+        <p><span class="text">{{post.category.name}}</span></p>
+        Tag: 
+        {% for tag in post.tag.all %}
+        
+        <span> {{ tag.name }}</span> 
+        {% endfor %}
+    </div>
+    <p class="card-text">{{post.content | safe}}</p>
+
+    <div>
+        {% if is_liked %}
+        <a href="{% url 'like_post' post.id %}" class='btn btn-outline-danger btn-sm'>Unlike</a>
+        {% else %}
+        <a href="{% url 'like_post' post.id%}" class='btn btn-outline-primary btn-sm'>Like</a>
+        {% endif %}
+    </div>
+    <span class='badge bg-success text-white'>❤️{{like_count}}</span>
+    <span class='badge bg-success text-white'> 👁️ {{post.view_count}}</span>
+    
+    <a href="{% url 'post_update' post.id%}" class="card-link">Edit</a>
+    <a href="{% url 'post_delete' post.id %}" class="card-link">Delete</a>
+  </div>
+
+
+</div>
+
+
+</div>
+
+{% endblock content %}

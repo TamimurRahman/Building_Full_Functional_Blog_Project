@@ -26,6 +26,12 @@ class Post(models.Model):
     view_count = models.PositiveBigIntegerField(default = 0)
     liked_users = models.ManyToManyField(User,related_name = 'liked_posts')
 
+
+#  9. liked_users = models.ManyToManyField(User, related_name='liked_posts')
+#  Like system er database field Same post ke onek user like korte pare
+#  Ekjon user o multiple post like korte pare
+# → That’s why ManyToManyField
+
     def __str__(self):
         return self.title
 
