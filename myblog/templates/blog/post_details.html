@@ -51,10 +51,10 @@
 
                 <span class="badge bg-success">❤️ {{ like_count }}</span>
                 <span class="badge bg-info text-dark">👁️ {{ post.view_count }}</span>
-
+                {% if user.is_authenticated and user == post.author%}
                 <a href="{% url 'post_update' post.id %}" class="btn btn-warning btn-sm">✏ Edit</a>
                 <a href="{% url 'post_delete' post.id %}" class="btn btn-danger btn-sm">🗑 Delete</a>
-
+                {% endif %}
             </div>
         </div>
     </div>
