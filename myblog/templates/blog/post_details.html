@@ -1,61 +1,96 @@
 {% extends "blog/base.html" %}
-{%load crispy_forms_tags %} 
-{% block title %}{{post.title}}{% endblock title %}
+{% load crispy_forms_tags %}
+{% block title %}{{ post.title }}{% endblock %}
 
 {% block content %}
 
-<div class="container">
-    <div class="card" style="width: 18rem;">
-  <div class="card-body">
-    <h5 class="card-title">{{post.title}}</h5>
-    <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-    <p class="card-text">By <strong>{{post.author}}</strong> {{post.created_at | date:'F d, y'}}</p>
-    
-    <div>
-        <p><span class="text">{{post.category.name}}</span></p>
-        Tag: 
-        {% for tag in post.tag.all %}
-        
-        <span> {{ tag.name }}</span> 
-        {% endfor %}
-    </div>
-    <p class="card-text">{{post.content | safe}}</p>
+<div class="container mt-4">
 
-    <div>
-        {% if is_liked %}
-        <a href="{% url 'like_post' post.id %}" class='btn btn-outline-danger btn-sm'>Unlike</a>
-        {% else %}
-        <a href="{% url 'like_post' post.id%}" class='btn btn-outline-primary btn-sm'>Like</a>
-        {% endif %}
-    </div>
-    <span class='badge bg-success text-white'>❤️{{like_count}}</span>
-    <span class='badge bg-success text-white'> 👁️ {{post.view_count}}</span>
-    
-    <a href="{% url 'post_update' post.id%}" class="card-link">Edit</a>
-    <a href="{% url 'post_delete' post.id %}" class="card-link">Delete</a>
-  </div>
+    <!-- Post Card -->
+    <div class="card shadow-lg border-0">
+        <div class="card-body">
 
+            <h2 class="fw-bold">{{ post.title }}</h2>
+
+            <p class="text-muted mb-1">
+                By <strong>{{ post.author }}</strong> • {{ post.created_at|date:"F d, Y" }}
+            </p>
+
+            <!-- Category -->
+            <p class="mb-2">
+                <span class="badge bg-dark">{{ post.category.name }}</span>
+            </p>
+
+            <!-- Tags -->
+            <p>
+                <strong>Tags:</strong>
+                {% for tag in post.tag.all %}
+                    <span class="badge bg-primary mx-1">#{{ tag.name }}</span>
+                {% empty %}
+                    <span class="text-muted">No tags</span>
+                {% endfor %}
+            </p>
+
+            <hr>
+
+            <!-- Blog Content -->
+            <p class="mt-3" style="font-size: 1.1rem; line-height: 1.7;">
+                {{ post.content|safe }}
+            </p>
+
+            <hr>
+
+            <!-- Like/Unlike + Stats -->
+            <div class="d-flex align-items-center gap-3">
+
+                {% if is_liked %}
+                <a href="{% url 'like_post' post.id %}" class="btn btn-danger btn-sm">❤️ Unlike</a>
+                {% else %}
+                <a href="{% url 'like_post' post.id %}" class="btn btn-primary btn-sm">👍 Like</a>
+                {% endif %}
+
+                <span class="badge bg-success">❤️ {{ like_count }}</span>
+                <span class="badge bg-info text-dark">👁️ {{ post.view_count }}</span>
+
+                <a href="{% url 'post_update' post.id %}" class="btn btn-warning btn-sm">✏ Edit</a>
+                <a href="{% url 'post_delete' post.id %}" class="btn btn-danger btn-sm">🗑 Delete</a>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Comments Section -->
+    <div class="card mt-4 shadow-sm">
+        <div class="card-header fw-bold">
+            💬 Comments
+        </div>
+
+        <div class="card-body">
+
+            <!-- Add Comment Form -->
+            <form method="post" class="mb-3">
+                {% csrf_token %}
+                {{ comment_form|crispy }}
+                <button type="submit" class="btn btn-primary btn-sm">➕ Add Comment</button>
+            </form>
+
+            <hr>
+
+            <!-- Display Comments -->
+            {% for comment in comments %}
+            <div class="p-2 mb-3 border-bottom">
+                <h6 class="mb-0">{{ comment.author }}</h6>
+                <small class="text-muted">{{ comment.created_at|date:'F d, Y h:i A' }}</small>
+                <p class="mb-1">{{ comment.content }}</p>
+            </div>
+
+            {% empty %}
+            <p class="text-muted">No comments yet. Be the first to comment 😊</p>
+            {% endfor %}
+
+        </div>
+    </div>
 
 </div>
 
-<div class='container'>
-    <h5>Comments</h5>
-    <form action="" method="post">
-        {% csrf_token %}
-        {{comment_form | crispy}}
-        <button type='submit' class='btn btn-primary'>Add comment</button>
-
-    </form>
-
-    {% for comment in comments %}
-    <h6>{{comment.author}}</h6>
-    <small>{{comment.created_at | date:'F d, Y H: i'}}</small>
-    <p>{{comment.content}}</p>
-
-    {% empty %}
-    <p>No comment yet.</p>
-    {% endfor %}
-
-</div>
-
-{% endblock content %}
+{% endblock %}

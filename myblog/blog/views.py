@@ -5,6 +5,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate,login,logout
 from django.core.paginator import Paginator
 from .forms import CommentForm,PostForm,UpdateProfileForm
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
@@ -79,6 +80,7 @@ def post_details(request,id):
 
     return render(request,'blog/post_details.html',context)
 
+@login_required
 def liked_post(request,id):
     post = get_object_or_404(Post,id=id)
 
@@ -89,6 +91,7 @@ def liked_post(request,id):
     
     return redirect('post_details',id=post.id)
 
+@login_required
 def post_create(request):
     if request.method == 'POST':
         form = PostForm(request.POST)
@@ -103,6 +106,7 @@ def post_create(request):
         form = PostForm()
     return render(request,'blog/post_create.html',{'form':form})
 
+@login_required
 def post_update(request,id):
     post = get_object_or_404(Post,id=id)
     if request.method == 'POST':
@@ -115,7 +119,7 @@ def post_update(request,id):
     
     return render(request,'blog/post_create.html',{'form':form})
     
-
+@login_required
 def post_delete(request,id):
     post = get_object_or_404(Post,id=id)
     post.delete()
@@ -132,6 +136,8 @@ def signup_view(request):
         form = UserCreationForm()
     return render(request,'user/signup.html',{'form':form})
 
+    
+@login_required
 def profile_view(request):
     section = request.GET.get('section','profile')
     context = {'section':section}
@@ -150,7 +156,7 @@ def profile_view(request):
         context['form']=form
     return render(request,'user/profile.html',context)
 
-    
+  
 def logout_view(request):
         logout(request)
         # Redirect to a desired page after logout, e.g., the login page or homepage

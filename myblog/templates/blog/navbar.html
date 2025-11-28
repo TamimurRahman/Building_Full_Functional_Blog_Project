@@ -1,51 +1,65 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="{% url 'post_list' %}">MyBlog</a>
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <div class="container">
 
+        <!-- Brand -->
+        <a class="navbar-brand fw-bold text-primary" href="{% url 'post_list' %}">MyBlog</a>
+
+        <!-- Mobile Menu Toggle -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                 aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
+        <!-- Navbar Links -->
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-
+                
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{% url 'post_list' %}">MyBlog</a>
+                    <a class="nav-link {% if request.path == '/' %}active fw-bold{% endif %}" href="{% url 'post_list' %}">Home</a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'post_list' %}">Blogs</a>
+                    <a class="nav-link {% if request.path == '/blogs/' %}active fw-bold{% endif %}" href="{% url 'post_list' %}">Blogs</a>
                 </li>
+                {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'post_create' %}">Write Blog </a>
+                </li>
+                {% endif %}
+            </ul>
+
+            <!-- Right Side Menu -->
+            <ul class="navbar-nav ms-auto">
 
                 {% if user.is_authenticated %}
-                <!-- Dropdown for logged in users -->
+                <!-- Dropdown Menu -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                    <a class="nav-link dropdown-toggle text-primary fw-semibold" href="#" id="navbarDropdown" role="button"
                        data-bs-toggle="dropdown" aria-expanded="false">
-                        {{ user.username }}
+                        👤 {{ user.username }}
                     </a>
 
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="{% url 'profile' %}?section=update">Update Profile</a></li>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                        <li><a class="dropdown-item" href="{% url 'profile' %}?section=update">Edit Profile</a></li>
                         <li><a class="dropdown-item" href="{% url 'profile' %}?section=posts">My Posts</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                        <li><a class="dropdown-item text-danger fw-bold" href="{% url 'logout' %}">Logout</a></li>
                     </ul>
                 </li>
+
                 {% else %}
-
-                <!-- Login / Signup for guest -->
+                <!-- Login & Register (Guests Only) -->
                 <li class="nav-item">
-                    <a href="{% url 'login' %}" class="nav-link">Login</a>
+                    <a href="{% url 'login' %}" class="nav-link fw-semibold">Login</a>
                 </li>
 
                 <li class="nav-item">
-                    <a href="{% url 'signup' %}" class="nav-link">Sign Up</a>
+                    <a href="{% url 'signup' %}" class="nav-link btn btn-primary btn-sm text-white ms-2 px-3">Sign Up</a>
                 </li>
-
                 {% endif %}
+
             </ul>
         </div>
     </div>

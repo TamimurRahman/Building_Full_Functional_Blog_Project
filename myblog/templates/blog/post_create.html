@@ -1,30 +1,28 @@
 {% extends "blog/base.html" %}
-{%load crispy_forms_tags %} 
-{% block title %}create Post{% endblock title %}
-
+{% load crispy_forms_tags %}
+{% block title %}Create Post{% endblock title %}
 
 {% block content %}
-<div class='container'>
-<h4>Create New Post</h4>
-<div class="card">
-  <div class="card-header">
-    Featured
-  </div>
-  <div class="card-body">
-   <form action="" method="post">
-    {{ form.media }}
-    {{ form | crispy }}
-    {% csrf_token %}
+<div class="container mt-4">
 
-    <button type="submit">Create Post</button>
+    <h4 class="mb-3">Create New Post</h4>
 
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-primary text-white fw-bold">
+            Featured
+        </div>
+        <div class="card-body">
 
-   </form>
-  </div>
-</div>
+            <form action="" method="post">
+                {% csrf_token %}
+                {{ form.media }}
+                {{ form|crispy }}
 
+                <button type="submit" class="btn btn-success mt-3">Create Post</button>
+            </form>
+
+        </div>
+    </div>
 
 </div>
 {% endblock content %}
-
-
