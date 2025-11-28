@@ -4,7 +4,7 @@ from django.db.models import Q
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate,login,logout
 from django.core.paginator import Paginator
-from .forms import CommentForm,PostForm
+from .forms import CommentForm,PostForm,UpdateProfileForm
 
 # Create your views here.
 
@@ -50,13 +50,13 @@ def post_details(request,id):
     post = get_object_or_404(Post,id=id)
 
     if request.method == 'POST':
-        comment_form = CommentForm(request.Post)
+        comment_form = CommentForm(request.POST)
         if comment_form.is_valid():
             comment = comment_form.save(commit=False) # commit database e save hobe nah
             comment.post = post
             comment.author = request.user
             comment.save()
-            return redirect('',id=post.id)
+            return redirect('post_details',id=post.id)
     else:
         comment_form = CommentForm()
         
@@ -120,6 +120,45 @@ def post_delete(request,id):
     post = get_object_or_404(Post,id=id)
     post.delete()
     return redirect('post_list')
+
+def signup_view(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request,user)
+            return redirect('post_list')
+    else:
+        form = UserCreationForm()
+    return render(request,'user/signup.html',{'form':form})
+
+def profile_view(request):
+    section = request.GET.get('section','profile')
+    context = {'section':section}
+
+    if section == 'posts':
+        posts = Post.objects.filter(author=request.user)
+        context['posts'] = posts
+    elif section == 'update':
+        if request.method == 'POST':
+            form = UpdateProfileForm(request.POST,instance=request.user)
+            if form.is_valid():
+                form.save()
+                return redirect('/profile?section=update')
+        else:
+            form = UpdateProfileForm(instance=request.user)
+        context['form']=form
+    return render(request,'user/profile.html',context)
+
+    
+def logout_view(request):
+        logout(request)
+        # Redirect to a desired page after logout, e.g., the login page or homepage
+        return redirect('login') # Assuming 'login' is the name of your login URL pattern
+
+
+    
+
 
         
 

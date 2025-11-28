@@ -38,6 +38,23 @@
 
 </div>
 
+<div class='container'>
+    <h5>Comments</h5>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{comment_form | crispy}}
+        <button type='submit' class='btn btn-primary'>Add comment</button>
+
+    </form>
+
+    {% for comment in comments %}
+    <h6>{{comment.author}}</h6>
+    <small>{{comment.created_at | date:'F d, Y H: i'}}</small>
+    <p>{{comment.content}}</p>
+
+    {% empty %}
+    <p>No comment yet.</p>
+    {% endfor %}
 
 </div>
 
