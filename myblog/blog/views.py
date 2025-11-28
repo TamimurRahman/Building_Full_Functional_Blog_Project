@@ -98,7 +98,7 @@ def post_create(request):
             post.author = request.user
             post.save()
             form.save_m2m()  # then save many-to-many tags jokhon forigen key use kora hoi tokhon autometic save hoiya jai but many to many er somoy alada vabe save kora lage
-            return redirect('')
+            return redirect('profile')
     else:
         form = PostForm()
     return render(request,'blog/post_create.html',{'form':form})
@@ -144,7 +144,7 @@ def profile_view(request):
             form = UpdateProfileForm(request.POST,instance=request.user)
             if form.is_valid():
                 form.save()
-                return redirect('/profile?section=update')
+                return redirect('profile')
         else:
             form = UpdateProfileForm(instance=request.user)
         context['form']=form

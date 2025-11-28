@@ -11,4 +11,40 @@
                 <a href="{% url 'logout' %}">Logout</a>
    </div>
 </div>
+
+<div class='col-d-9 container'>
+    {% if section == 'profile' %}
+        <h3>Welcome, {{ request.user.get_full_name|default:request.user.username }}!</h3>
+
+        <p>Email: {{request.user.email}}</p>
+    {% elif  section == 'update' %}
+    <h4>Update Profile</h4>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{form | crispy}}
+        <button type="submit">Update</button>
+
+    </form>
+    {% elif section == 'posts' %}
+
+    <h4>My Posts</h4>
+    <a href="{% url 'post_create'%}" class='btn -btn-success'> write Blog</a>
+    {% endif %}
+
+</div>
+<hr>
+
+{% for post in posts %}
+<div class="card" style="width: 18rem;">
+  <div class="card-body">
+    <h5 class="card-title">{{post.title}}</h5>
+    <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
+    <p class="card-text">{{post.created | date:'F d, Y'}}</p>
+    <a href="{% url 'post_update' post.id %}" class="card-link">Post Edit</a>
+    <a href="{% url 'post_delete' post.id %}" class="card-link">Post Delete</a>
+  </div>
+</div>
+{% empty %}
+
+{% endfor %}
 {% endblock %}
